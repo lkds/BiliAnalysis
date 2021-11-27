@@ -1,14 +1,17 @@
 # from api import client
 import numpy as np
-import paddlehub as hub
+import requests
 
-module = hub.Module(name='senta_bilstm')
+def send_cal_sentiment(word_list):
+    url = 'http://127.0.0.1:8000/cal_sentiment'
+    r = requests.post(url, json=word_list)
+    return r.json()
 
 def cal_sentiment(text_list):
     """
     计算情感倾向
     """
-    res = module.sentiment_classify(text_list)
+    res = send_cal_sentiment(text_list)
     sentiment_list = [(x['positive_probs'] - 0.5) * 2 for x in res]
     return sentiment_list
 

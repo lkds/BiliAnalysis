@@ -14,6 +14,7 @@ from fastapi import FastAPI
 import uvicorn
 
 from starlette.middleware.cors import CORSMiddleware  #引入 CORS中间件模块
+import requests
 
 #创建一个FastApi实例
 app = FastAPI()
@@ -33,16 +34,22 @@ app.add_middleware(
 def index():
     return {"message": "Hello World"}
 
-@app.get("/video_analysis/{bvid}")
+@app.get("/video_analysis")
 def video_analysis(bvid: str):
     return {"bv":bvid}
 
 @app.get("/video_list/up/{upid}")
 def up_analysis(upid: str):
-    pass
+    return upid
 
 @app.get('/video_list/hot')
 def hot_analysis():
     pass
+
+@app.get('/video_info')
+def get_bv_info(bv:str):
+    url = 'http://api.bilibili.com/x/web-interface/view?bvid={}'.format(bv)
+    r = requests.get(url).json()['data']
+    return r
 
 uvicorn.run(app, host="0.0.0.0", port=5000)
